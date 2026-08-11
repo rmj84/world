@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="BoxMesh" id="BoxMesh_seat"]
+size = Vector3(0.9, 0.12, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_back"]
+size = Vector3(0.9, 0.4, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.55, 0.35, 0.2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(0.9, 0.7, 0.45)
+
+[node name="Bench" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="Seat" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_seat")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+
+[node name="Backrest" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_back")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.16)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_col")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)

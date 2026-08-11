@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="BoxMesh" id="BoxMesh_fence"]
+size = Vector3(1.0, 0.6, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fence"]
+albedo_color = Color(0.82, 0.76, 0.6, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(1.0, 0.6, 0.1)
+
+[node name="Fence" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="Rail" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_fence")
+surface_material_override/0 = SubResource("StandardMaterial3D_fence")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_col")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
