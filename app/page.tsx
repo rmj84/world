@@ -40,6 +40,11 @@ export default function HomePage() {
       >
         ☎️ 사람이랑 이야기하고 싶어요
       </a>
+
+      <p className="mt-2 text-center text-sm leading-relaxed text-slate-400">
+        ※ 이 안내는 일반적으로 알려진 사용 순서를 바탕으로 만들었어요.
+        실제 매장·기관의 화면 문구는 조금 다를 수 있으니 참고용으로 봐주세요.
+      </p>
     </main>
   );
 }

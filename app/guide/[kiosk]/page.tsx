@@ -51,9 +51,9 @@ export default function GuidePage() {
           <BigButton
             variant="primary"
             onClick={() => setStepIndex(0)}
-            className="flex-1 py-5 text-xl"
+            className="flex-1 whitespace-nowrap py-5 text-xl"
           >
-            처음부터 다시
+            다시 보기
           </BigButton>
         ) : (
           <BigButton
