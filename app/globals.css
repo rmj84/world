@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: #f3f6fb;
+  color: #0f172a;
+}
+
+button {
+  touch-action: manipulation;
+}

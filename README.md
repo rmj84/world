@@ -1,66 +1,54 @@
-# Island Life
+# 친절 키오스크
 
-내 섬을 자유롭게 꾸미는 PC 게임 프로토타입입니다. 두근두근타운/스타듀밸리에서 영감을 받았습니다.
-현재 단계는 **섬 꾸미기(싱글 플레이)** 까지이며, 팔로우한 유저의 섬이 옆에 붙는 소셜 기능은 다음 단계입니다.
+노년층·중장년층이 실제 키오스크(무인 단말기)를 사용할 때 실시간으로 도와주는 모바일 웹앱입니다.
+설치 없이 브라우저에서 바로 열 수 있는 PWA(Progressive Web App) 형태로 만들었습니다.
+
+## 핵심 기능
+
+- **카메라로 화면 인식**: 사용자가 실제 키오스크 화면을 사진으로 찍으면, Claude(Anthropic)의 이미지 인식으로 어떤 화면인지 판단해 다음에 눌러야 할 단계를 바로 안내합니다.
+- **단계별 안내**: 병원 접수·수납 / 은행 ATM / 패스트푸드·카페 주문, 3종의 실제 사용 흐름을 단계별로 큰 글씨와 음성으로 안내합니다.
+- **노년층 UX**: 큰 글씨, 큰 버튼, 고대비 색상, 단계마다 자동 음성 안내(TTS), 쉬운 뒤로가기, "사람이랑 이야기하고 싶어요" 버튼을 제공합니다.
+
+## 왜 "사진 찍어서 인식"인가
+
+완전한 실시간 프레임 단위 AR 인식은 별도의 전용 비전 모델과 고정형 인프라가 필요해 프로토타입 범위를 벗어납니다.
+대신 "카메라로 화면을 비추고 사진 한 장을 찍으면 즉시 인식"하는 방식으로 실질적인 체감 속도를 유지하면서
+LLM 비전 API(Claude)로 실제 화면을 이해하도록 구현했습니다. 카메라 인식이 실패하거나 API 키가 설정되지
+않은 경우에도 항상 수동으로 키오스크 종류를 골라 안내를 볼 수 있습니다.
 
 ## 실행 방법
 
-1. [Godot Engine 4.3 이상](https://godotengine.org/download) 설치 (무료)
-2. Godot 실행 → "Import" → 이 저장소의 `project.godot` 선택
-3. 에디터에서 F5(또는 상단 재생 버튼)로 실행
+```bash
+npm install
+npm run dev
+```
 
-Windows용 단독 실행 파일(.exe)이 필요하면 Godot 에디터의 `Project > Export`에서
-"Windows Desktop" 프리셋을 추가해 내보낼 수 있습니다. (내보내기 템플릿 최초 1회 다운로드 필요)
+카메라 인식 기능을 사용하려면 `.env.local`에 Anthropic API 키를 설정하세요 (키가 없어도 수동 안내 기능은 정상 동작합니다):
 
-## 조작법
-
-| 키 | 동작 |
-|---|---|
-| W A S D / 방향키 | 캐릭터 이동 |
-| B | 꾸미기(건축) 모드 켜기/끄기 |
-| 마우스 이동 (꾸미기 모드) | 배치 위치 미리보기 |
-| 좌클릭 (꾸미기 모드) | 선택한 오브젝트 배치 |
-| 우클릭 (꾸미기 모드) | 클릭한 오브젝트 제거 |
-| Q / E (꾸미기 모드) | 배치 오브젝트 90도 회전 |
-| Esc | 꾸미기 모드 종료 |
-
-배치 가능한 오브젝트: 나무, 꽃, 벤치, 울타리, 가로등, 바위 (하단 팔레트에서 선택)
-
-## 저장
-
-섬 배치 정보는 오브젝트를 놓거나 지울 때마다 자동 저장됩니다.
-저장 위치: Godot의 `user://island_save.json` (Windows 기준 보통
-`%APPDATA%/Godot/app_userdata/Island Life/island_save.json`)
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
 
 ## 프로젝트 구조
 
 ```
-project.godot
-scripts/
-  decoration_catalog.gd   배치 가능한 오브젝트 목록 (autoload: Catalog)
-  save_system.gd          섬 레이아웃 저장/불러오기 (autoload: SaveSystem)
-  island_grid.gd           그리드 좌표 <-> 월드 좌표 변환, 섬 범위 체크
-  player.gd                캐릭터 이동
-  camera_rig.gd            3인칭 각도 카메라(캐릭터 추적)
-  build_mode_controller.gd 꾸미기 모드 핵심 로직 (배치/제거/회전/저장)
-  decoration_palette.gd    꾸미기 모드 UI 팔레트
-scenes/
-  main.tscn                게임 메인 씬 (진입점)
-  island.tscn               섬 지형(잔디/모래/바다)
-  player.tscn                캐릭터
-  decoration_palette.tscn    꾸미기 UI
-  decorations/                나무·꽃·벤치·울타리·가로등·바위 프리팹
+app/
+  page.tsx                 홈 화면 (카메라 진입 + 키오스크 목록)
+  camera/page.tsx           카메라 촬영 및 인식 화면
+  guide/[kiosk]/page.tsx    키오스크별 단계 안내 화면
+  api/recognize/route.ts    사진을 Claude Vision에 전달해 화면을 인식하는 API
+lib/
+  kioskData.ts               병원/ATM/패스트푸드 3종의 실사용 단계 데이터
+  useTTS.ts                  브라우저 음성 합성(TTS) 훅
+components/
+  BigButton.tsx / StepCard.tsx / TopBar.tsx   노년층 친화 UI 컴포넌트
+public/manifest.json         PWA 매니페스트 (홈 화면에 추가 가능)
+legacy-island-game/           이 브랜치와 무관한 이전 Godot 프로토타입 (보존용, 삭제하지 않고 이동만 함)
 ```
-
-## 그래픽에 대한 메모
-
-지금은 전부 Godot 기본 프리미티브 도형(구, 원기둥, 상자)으로 만든 플레이스홀더 아트입니다.
-"귀여운 로우폴리" 스타일을 제대로 완성하려면 Kenney.nl, Quaternius 같은 무료 로우폴리
-에셋팩으로 각 `decorations/*.tscn`의 메시를 교체하면 됩니다. 구조(그리드 배치, 저장, 충돌)는
-그대로 유지한 채 비주얼만 바꿀 수 있습니다.
 
 ## 다음 단계 (아직 미구현)
 
-- 계정/로그인, 유저별 섬 서버 저장 (지금은 로컬 파일 저장만 있음)
-- 다른 유저 팔로우, 팔로우한 유저의 섬이 내 섬 옆에 붙어서 함께 접속해 보이는 기능
-- 실시간 멀티플레이(같은 섬에서 여러 캐릭터 동시 이동)
+- 카메라 프레임을 지속적으로 분석하는 진짜 실시간 AR 오버레이
+- 병원/은행/매장별 실제 UI 스크린샷 데이터셋 기반 인식 정확도 개선
+- 사용 기록 저장, 자주 가는 곳 즐겨찾기
+- 다국어(외국인 노동자 등) 지원

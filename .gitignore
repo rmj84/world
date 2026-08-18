@@ -1,11 +1,18 @@
-# Godot 4 generated cache/import files
-.godot/
-.import/
-export.cfg
-export_presets.cfg
-*.translation
+# Node / Next.js
+node_modules/
+.next/
+out/
+.env*.local
+.env
+next-env.d.ts
+*.tsbuildinfo
 
-# Build output
+# Legacy Godot project (legacy-island-game/)
+legacy-island-game/.godot/
+legacy-island-game/.import/
+legacy-island-game/export.cfg
+legacy-island-game/export_presets.cfg
+legacy-island-game/*.translation
 /builds/
 /export/
 
