@@ -11,7 +11,7 @@ export default function HomePage() {
       </div>
 
       <Link href="/camera">
-        <BigButton className="flex items-center justify-center gap-3 py-8 text-3xl">
+        <BigButton className="flex items-center justify-center gap-2 whitespace-nowrap px-4 py-8 text-2xl">
           📷 카메라로 화면 비추기
         </BigButton>
       </Link>
